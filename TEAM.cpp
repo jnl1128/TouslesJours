@@ -165,13 +165,15 @@ int main() {
 	int cash = 0; //손님이 내는 돈
 	int change = 0; //거스름돈
 	int total = 0; //내야하는 돈(빵 값)
-	vector <int> bread_price[3];
-	vector <ObjectPtr> bread_image[3];
+	vector <int> bread_price[5];
+	vector <ObjectPtr> bread_image[5];
+
+	/*menu limit*/
+	int menu_limit = 3;
 
 	easy_select->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		selected_num = 0;
 		scene_game->enter();
-		loop_easy--;
 
 		/*client*/
 		pick_client(ano_guest);
@@ -181,21 +183,20 @@ int main() {
 
 		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
 		for (int i = 0; i < iter; i++) {
-			int type = rand() % 15;//빵:0.png~14.png
+			int type = rand() % 11;
 			auto bread = Object::create("images/빵/" + product[type].name + ".png", scene_game, 130 + i * 150, 200, true);
 			bread_image->push_back(bread);
 			bread_price->push_back(product[type].price);
-
 		}
 
-		/*total*/
+		/*total빵값*/
 		for (int i = 0; i < iter; i++) {
 			total += bread_price->back();
 			bread_price->pop_back();
 		}
 		std::cout << "total: " << total << endl;
 
-		/*cash*/
+		/*cash손님이 내는 돈*/
 		cash = pick_cash(cash_image, total);
 
 		return true;
@@ -205,21 +206,82 @@ int main() {
 	normal_select->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 
 		selected_num = 1;
-		return true;
 		scene_game->enter();
+
+		/*client*/
+		pick_client(ano_guest);
+
+		/*빵개수 랜덤*/
+		const int iter = rand() % 3 + 2;
+
+		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
+		for (int i = 0; i < iter; i++) {
+			int type = rand() % 18;//빵:0.png~14.png
+			auto bread = Object::create("images/빵/" + product[type].name + ".png", scene_game, 130 + i * 150, 200, true);
+			bread_image->push_back(bread);
+			bread_price->push_back(product[type].price);
+		}
+
+		/*total빵값*/
+		for (int i = 0; i < iter; i++) {
+			total += bread_price->back();
+			bread_price->pop_back();
+		}
+		std::cout << "total: " << total << endl;
+
+		/*cash손님이 내는 돈*/
+		cash = pick_cash(cash_image, total);
+
+		return true;
 		});
 
 	hard_select->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 
 		selected_num = 2;
 		scene_game->enter();
+		/*client*/
+		pick_client(ano_guest);
+
+		/*빵개수 랜덤*/
+		const int iter = rand() % 3 + 3;
+
+		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
+		for (int i = 0; i < iter; i++) {
+			int type = rand() % 25;
+			auto bread = Object::create("images/빵/" + product[type].name + ".png", scene_game, 130 + i * 150, 200, true);
+			bread_image->push_back(bread);
+			bread_price->push_back(product[type].price);
+		}
+
+		/*total빵값*/
+		for (int i = 0; i < iter; i++) {
+			total += bread_price->back();
+			bread_price->pop_back();
+		}
+		std::cout << "total: " << total << endl;
+
+		/*cash손님이 내는 돈*/
+		cash = pick_cash(cash_image, total);
 		return true;
 		});
 
 	/*button*/
 	auto menu_button = Object::create("images/메뉴확인.png", scene_game, 1150, 100);
 	menu_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-		scene_menu->enter();
+		if (menu_limit > 0) {
+			scene_menu->enter();
+			menu_limit -= 1;
+		}
+		else {
+			showMessage("no more!");
+		}
+		return true;
+		});
+	
+	auto reset_button = Object::create("images/reset.png", scene_game, 100, 100);
+	reset_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		change = 0;
+		cout << "change: " << change << endl;
 		return true;
 		});
 
@@ -238,11 +300,23 @@ int main() {
 	done->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		if (loop_easy > 0 || loop_normal > 0 || loop_hard > 0) {
 			if (change == cash - total) {
-				loop_easy--;
+				cout << "selected_num: " << selected_num << endl;
+				if (selected_num == 0) {
+					loop_easy -= 1;
+				}
+				if (selected_num == 1) {
+					loop_normal -= 1;
+				}
+				if (selected_num == 2) {
+					loop_hard -= 1;
+				}
 				showMessage("계산 성공!");
 			}
 			else {
+				loop_easy--;
+				cout << loop_easy << endl;
 				showMessage("계산 실패!");
+
 			}
 
 			/*초기화*/
@@ -255,10 +329,12 @@ int main() {
 				bread_image->pop_back();
 			}
 
+			/*다시 시작*/
+			cout << "-----------------------------" << endl;
+
 			pick_client(ano_guest);//손님 이미지 랜덤으로 보이게
 
 			/*빵 오브젝트, 가격 저장*/
-			vector <int> bread_price[3];
 			const int iter = rand() % 3 + 1;
 			std::cout << "iter: " << iter << endl;
 			for (int i = 0; i < iter; i++) {
@@ -272,37 +348,18 @@ int main() {
 				bread_price->push_back(product[type].price);
 			}
 
+			/*total*/
 			for (int i = 0; i < iter; i++) {
 				total += bread_price->back();
 				bread_price->pop_back();
 			}
-
-			/*빵 가격에 맞는 돈 제시*/
-			cash = pick_cash(cash_image, total);
 			std::cout << "total: " << total << endl;
+
+			/*cash*/
+			cash = pick_cash(cash_image, total);
 		}
-		else {
-			loop_easy = 10;
-			loop_normal = 20;
-			loop_hard = 30;
+		if (loop_easy < 0 || loop_normal < 0|| loop_hard <0) {
 			endGame();
-		}
-
-		///*빵 오브젝트, 가격 저장*/
-		vector <int> bread_price[3];
-		const int iter = rand() % 3 + 1;
-		std::cout << "iter: " << iter << endl;
-		for (int i = 0; i < iter; i++) {
-			int type = rand() % 25;
-			auto bread = Object::create("images/빵/" + product[type].name + ".png", scene_game, 130 + i * 150, 200);
-			bread_image->push_back(bread);
-			bread_price->push_back(product[type].price);
-		}
-
-		for (int i = 0; i < iter; i++) {
-			total += bread_price->back();
-			bread_price->pop_back();
-
 		}
 		return true;
 		});
