@@ -37,6 +37,7 @@ int pick_cash(ObjectPtr object, int num) {
 	return return_value;
 }
 
+
 void showingStatus(int num) {
 	string showChange = "지금은 " + to_string(num) + "원입니다.";
 	showMessage(showChange);
