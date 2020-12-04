@@ -1,4 +1,4 @@
-﻿#include <bangtal>
+#include <bangtal>
 #include <iostream>
 #include <vector>
 using namespace bangtal;
@@ -18,7 +18,7 @@ void pick_client(ObjectPtr object) {
 
 int pick_cash(ObjectPtr object, int num) {
 	int return_value = 0;
-	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000 };
+	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000, 23000, 25000, 30000};
 	for (int v_num = 0; v_num < 6; v_num++) {
 		if (num > Vector_cash[v_num]) {
 			continue;
@@ -84,6 +84,8 @@ int main() {
 	auto scene_game = Scene::create("", "images/game_play.png");
 	auto scene_guide = Scene::create("", "images/게임설명판.png");
 	auto scene_menu = Scene::create("", "images/메뉴판.png");
+	auto scene_final = Scene::create("", "images/성공화면.png");
+	auto scene_over = Scene::create("", "images/게임오버.png");
 
 
 	/*scene_main*/
@@ -140,12 +142,27 @@ int main() {
 		return true;
 		});
 
+
+	/*scene_final*/
+
+	auto re_button = Object::create("images/replay.png", scene_final, 300, 30);
+	auto end_button = Object::create("images/endgame.png", scene_final, 700, 30);
+
+	auto medal = Object::create("images/알린이.png", scene_final, 948, 450);
+	
+	end_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		endGame();
+		return true; 
+
+		});
+
+
 	/*guest*/
 	auto ano_guest = Object::create("images/익명.png", scene_game, 200, 600);
 	auto text_ballon = Object::create("images/말풍선.png", scene_game, 500, 450);
 
 	/*cash*/
-	auto cash_image = Object::create("images/돈.png", scene_game, 500, 600);
+	auto cash_image = Object::create("images/돈.png", scene_game, 550, 600);
 
 	/*scene_select*/
 	auto easy_select = Object::create("images/easy.png", scene_select, 400, 400);
@@ -160,6 +177,8 @@ int main() {
 	int loop_easy = 10;
 	int loop_normal = 20;
 	int loop_hard = 30;
+	int win_count = 0;
+	int lose_count = 0;
 
 	/*price computation value*/
 	int cash = 0; //손님이 내는 돈
@@ -277,13 +296,7 @@ int main() {
 		}
 		return true;
 		});
-	
-	auto reset_button = Object::create("images/reset.png", scene_game, 100, 100);
-	reset_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-		change = 0;
-		cout << "change: " << change << endl;
-		return true;
-		});
+
 
 	auto up_for_5000 = Object::create("images/up_button.png", scene_game, 932, 273);
 	auto down_for_5000 = Object::create("images/down_button.png", scene_game, 932, 238);
@@ -296,6 +309,13 @@ int main() {
 	auto done = Object::create("images/done.png", scene_game, 1040, 210);
 	auto reset = Object::create("images/reset.png", scene_game, 930, 210);
 
+	reset->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		change = 0;
+		cout << "change: " << change << endl;
+		return true;
+		});
+
+
 
 	done->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		if (loop_easy > 0 || loop_normal > 0 || loop_hard > 0) {
@@ -303,17 +323,22 @@ int main() {
 				cout << "selected_num: " << selected_num << endl;
 				if (selected_num == 0) {
 					loop_easy -= 1;
+					win_count++;
 				}
 				if (selected_num == 1) {
 					loop_normal -= 1;
+					win_count++;
 				}
 				if (selected_num == 2) {
 					loop_hard -= 1;
+					win_count++;
 				}
+				cout << "win:"<< win_count << endl;
 				showMessage("계산 성공!");
 			}
 			else {
 				loop_easy--;
+				lose_count++;
 				cout << loop_easy << endl;
 				showMessage("계산 실패!");
 
@@ -358,11 +383,19 @@ int main() {
 			/*cash*/
 			cash = pick_cash(cash_image, total);
 		}
-		if (loop_easy < 0 || loop_normal < 0|| loop_hard <0) {
-			endGame();
+		if (loop_easy < 0 || loop_normal < 0 || loop_hard < 0) {
+
+			if (win_count < 5) { medal->setImage("images/알린이.png"); }
+			else if (win_count > 4 && win_count < 8) { medal->setImage("images/프로.png"); }
+			else if (win_count >= 8) { medal->setImage("images/베테랑.png"); }
+
+			scene_final->enter();
 		}
 		return true;
 		});
+
+
+
 
 	up_for_100->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		change += 100;
@@ -404,6 +437,11 @@ int main() {
 		showingStatus(change);
 		return true;
 		});
+
+
+
+
+
 
 	startGame(scene_main);
 	return 0;
