@@ -18,7 +18,7 @@ void pick_client(ObjectPtr object) {
 
 int pick_cash(ObjectPtr object, int num) {
 	int return_value = 0;
-	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000, 23000, 25000, 30000};
+	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000, 23000, 25000, 30000 };
 
 	for (int v_num = 0; v_num < 6; v_num++) {
 		if (num > Vector_cash[v_num]) {
@@ -44,7 +44,7 @@ void showingStatus(int num) {
 }
 
 
-int main(){
+int main() {
 
 	struct Product product[25]{
 
@@ -145,17 +145,7 @@ int main(){
 		});
 
 
-	/*scene_final*/
 
-	auto re_button = Object::create("images/replay.png", scene_final, 300, 30);
-	auto end_button = Object::create("images/endgame.png", scene_final, 700, 30);
-
-	auto medal = Object::create("images/알린이.png", scene_final, 948, 450);
-
-	end_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-		endGame();
-		return true;
-		});
 
 
 	/*guest*/
@@ -198,6 +188,37 @@ int main(){
 
 	/*menu limit*/
 	int menu_limit = 3;
+
+	/*scene_final*/
+
+	auto re_button = Object::create("images/replay.png", scene_final, 300, 30);
+	auto end_button = Object::create("images/endgame.png", scene_final, 700, 30);
+
+	auto medal = Object::create("images/알린이.png", scene_final, 948, 450);
+
+	re_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+
+		win_count = 0;
+		lose_count = 0;
+		cash = 0;
+		change = 0;
+		total = 0;
+		loop_easy =10;
+		loop_normal = 20;
+		loop_hard = 30;
+
+		scene_main->enter();
+
+
+		return true;
+		});
+
+	end_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		endGame();
+		return true;
+		});
+
+
 
 	easy_select->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		selected_num = 0;
@@ -465,4 +486,3 @@ int main(){
 	startGame(scene_main);
 	return 0;
 }
-
