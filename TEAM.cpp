@@ -1,4 +1,4 @@
-﻿#include <bangtal>
+#include <bangtal>
 #include <iostream>
 #include <vector>
 using namespace bangtal;
@@ -19,6 +19,7 @@ void pick_client(ObjectPtr object) {
 int pick_cash(ObjectPtr object, int num) {
 	int return_value = 0;
 	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000, 23000, 25000, 30000 };
+
 	for (int v_num = 0; v_num < 6; v_num++) {
 		if (num > Vector_cash[v_num]) {
 			continue;
@@ -35,6 +36,7 @@ int pick_cash(ObjectPtr object, int num) {
 	object->show();
 	return return_value;
 }
+
 
 void showingStatus(int num) {
 	string showChange = "지금은 " + to_string(num) + "원입니다.";
@@ -191,6 +193,11 @@ int main() {
 
 
 
+
+	/*cash*/
+	auto cash_image = Object::create("images/돈.png", scene_game, 550, 600);
+
+
 	/*scene_select*/
 	auto easy_select = Object::create("images/easy.png", scene_select, 400, 400);
 	easy_select->setScale(1.5f);
@@ -204,6 +211,7 @@ int main() {
 	int loop_easy = 10;
 	int loop_normal = 20;
 	int loop_hard = 30;
+	int iter;
 
 
 	/*price computation value*/
@@ -230,6 +238,7 @@ int main() {
 		cash = 0;
 		change = 0;
 		total = 0;
+
 		life = 0;
 		loop_easy = 10;
 		loop_normal = 20;
@@ -241,11 +250,25 @@ int main() {
 		sound_bgm->play(true);
 		sound_fail->stop();
 
+		loop_easy =10;
+		loop_normal = 20;
+		loop_hard = 30;
+
+
 		scene_main->enter();
 
 
 		return true;
 		});
+
+
+	end_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		endGame();
+		return true;
+		});
+
+
+
 
 	easy_select->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		selected_num = 0;
@@ -261,7 +284,7 @@ int main() {
 		pick_client(ano_guest);
 
 		/*빵개수 랜덤*/
-		const int iter = rand() % 3 + 1;
+		iter = rand() % 3 + 1;
 
 		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
 		for (int i = 0; i < iter; i++) {
@@ -300,7 +323,7 @@ int main() {
 		pick_client(ano_guest);
 
 		/*빵개수 랜덤*/
-		const int iter = rand() % 3 + 2;
+		iter = rand() % 3 + 2;
 
 		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
 		for (int i = 0; i < iter; i++) {
@@ -338,7 +361,7 @@ int main() {
 		pick_client(ano_guest);
 
 		/*빵개수 랜덤*/
-		const int iter = rand() % 3 + 3;
+		iter = rand() % 3 + 3;
 
 		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
 		for (int i = 0; i < iter; i++) {
@@ -409,8 +432,13 @@ int main() {
 					loop_hard -= 1;
 					win_count++;
 				}
+
 				cout << "win:" << win_count << endl;
 				sound_done_succ->play();
+
+
+				cout << "win:" << win_count << endl;
+
 				showMessage("계산 성공!");
 			}
 			else {
@@ -446,8 +474,6 @@ int main() {
 			pick_client(ano_guest);//손님 이미지 랜덤으로 보이게
 
 			/*빵 오브젝트, 가격 저장*/
-			const int iter = rand() % 3 + 1;
-			std::cout << "iter: " << iter << endl;
 			for (int i = 0; i < iter; i++) {
 				int type = 0;
 				if (selected_num == 0) type = rand() % 11;
@@ -476,6 +502,7 @@ int main() {
 			if (win_count > 2 && win_count < 5) { progress_point->locate(scene_game, 120, 50); }
 			else if (win_count >= 5 && win_count < 8) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
 			else if (win_count >= 8) { medal->setImage("images/베테랑.png"); }
+
 		}
 
 		else if (selected_num == 1) {
@@ -491,11 +518,17 @@ int main() {
 		}
 
 
+
 		if (loop_easy < 0 || loop_normal < 0 || loop_hard < 0) {
 
 			scene_final->enter();
 			sound_game_bgm->stop();
 			sound_succ->play();
+
+		if (loop_easy < 0 || loop_normal < 0 || loop_hard < 0) {
+
+			scene_final->enter();
+
 		}
 
 		return true;
