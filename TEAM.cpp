@@ -161,6 +161,16 @@ int main() {
 	auto ano_guest = Object::create("images/익명.png", scene_game, 200, 600);
 	auto text_ballon = Object::create("images/말풍선.png", scene_game, 500, 450);
 
+	/*probress_bar*/
+	auto progress_point = Object::create("images/point.png", scene_game, 10, 50);
+	auto progress_bar = Object::create("images/progress_bar.png", scene_game, 10, 10);
+
+	int win_count = 0;
+	int lose_count = 0;
+	int grade = 0;
+
+
+
 	/*cash*/
 	auto cash_image = Object::create("images/돈.png", scene_game, 550, 600);
 
@@ -177,8 +187,7 @@ int main() {
 	int loop_easy = 10;
 	int loop_normal = 20;
 	int loop_hard = 30;
-	int win_count = 0;
-	int lose_count = 0;
+
 
 	/*price computation value*/
 	int cash = 0; //손님이 내는 돈
@@ -383,19 +392,44 @@ int main() {
 			/*cash*/
 			cash = pick_cash(cash_image, total);
 		}
+
+		/* win_count*/
+		
+		if (selected_num == 0) {
+			if (win_count < 5) grade = 1;
+			else if (win_count >= 5 && win_count > 8) grade = 2;
+			else if (win_count >= 8) grade = 3;
+		}
+
+		else if (selected_num == 1) {
+			if (win_count < 8) grade = 1;
+			else if (win_count >= 8 && win_count < 15) grade = 2;
+			else if (win_count >= 15) grade = 3;
+		}
+
+		else if (selected_num == 2){
+			if (win_count < 12) grade = 1;
+			else if (win_count >= 12 && win_count > 21) grade = 2;
+			else if (win_count >= 22) grade = 3;
+		}
+
+
 		if (loop_easy < 0 || loop_normal < 0 || loop_hard < 0) {
 
-			if (win_count < 5) { medal->setImage("images/알린이.png"); }
-			else if (win_count > 4 && win_count < 8) { medal->setImage("images/프로.png"); }
-			else if (win_count >= 8) { medal->setImage("images/베테랑.png"); }
+
+			switch (grade) {
+			
+			case 1: {medal->setImage("images/알린이.png"); break; }
+			case 2: {medal->setImage("images/프로.png"); break; }
+			case 3: {medal->setImage("images/베테랑.png"); break; }
+
+			}
 
 			scene_final->enter();
 		}
+
 		return true;
 		});
-
-
-
 
 	up_for_100->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		change += 100;
