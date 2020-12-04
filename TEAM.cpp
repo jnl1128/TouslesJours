@@ -18,7 +18,7 @@ void pick_client(ObjectPtr object) {
 
 int pick_cash(ObjectPtr object, int num) {
 	int return_value = 0;
-	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000 };
+	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000, 23000, 25000, 30000 };
 	for (int v_num = 0; v_num < 6; v_num++) {
 		if (num > Vector_cash[v_num]) {
 			continue;
@@ -84,6 +84,8 @@ int main() {
 	auto scene_game = Scene::create("", "images/game_play.png");
 	auto scene_guide = Scene::create("", "images/게임설명판.png");
 	auto scene_menu = Scene::create("", "images/메뉴판.png");
+	auto scene_final = Scene::create("", "images/성공화면.png");
+	auto scene_over = Scene::create("", "images/게임오버.png");
 
 
 	/*scene_main*/
@@ -140,12 +142,54 @@ int main() {
 		return true;
 		});
 
+
 	/*guest*/
 	auto ano_guest = Object::create("images/익명.png", scene_game, 200, 600);
 	auto text_ballon = Object::create("images/말풍선.png", scene_game, 500, 450);
 
+	/*probress_bar*/
+	auto progress_point = Object::create("images/point.png", scene_game, 10, 50);
+	auto progress_bar = Object::create("images/progress_bar.png", scene_game, 10, 10);
+
+	int win_count = 0;
+	int lose_count = 0;
+
+
 	/*cash*/
-	auto cash_image = Object::create("images/돈.png", scene_game, 500, 600);
+	auto cash_image = Object::create("images/돈.png", scene_game, 550, 600);
+
+	/*sound*/
+	auto sound_bgm = Sound::create("sound/bgm.mp3");
+	auto sound_game_bgm = Sound::create("sound/game_bgm.mp3");
+	auto sound_fail = Sound::create("sound/실패.mp3");
+	auto sound_succ = Sound::create("sound/성공.MP3");
+	auto sound_done_fail = Sound::create("sound/입력실패.mp3");
+	auto sound_done_succ = Sound::create("sound/입력성공.mp3");
+	sound_bgm->play(true);
+
+
+	/*timer*/
+	auto timer = Timer::create(5.0f);
+	timer->setOnTimerCallback([&](TimerPtr)->bool {
+		scene_over->enter();
+		sound_game_bgm->stop();
+		sound_fail->play();
+		return true;
+		});
+
+	/*heart*/
+	class Heart {
+	public:
+		ObjectPtr heart;
+	};
+
+	Heart hearts[3];
+	for (int i = 0; i < 3; i++) {
+		hearts[i].heart = Object::create("images/heart.png", scene_game, 930 + (i * 100), 620);
+	}
+	int life = 0;
+
+
 
 	/*scene_select*/
 	auto easy_select = Object::create("images/easy.png", scene_select, 400, 400);
@@ -161,6 +205,7 @@ int main() {
 	int loop_normal = 20;
 	int loop_hard = 30;
 
+
 	/*price computation value*/
 	int cash = 0; //손님이 내는 돈
 	int change = 0; //거스름돈
@@ -171,9 +216,46 @@ int main() {
 	/*menu limit*/
 	int menu_limit = 3;
 
+	/*scene_final*/
+
+	auto re_button = Object::create("images/replay.png", scene_final, 300, 30);
+	auto end_button = Object::create("images/endgame.png", scene_final, 700, 30);
+
+	auto medal = Object::create("images/알린이.png", scene_final, 948, 450);
+
+	re_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+
+		win_count = 0;
+		lose_count = 0;
+		cash = 0;
+		change = 0;
+		total = 0;
+		life = 0;
+		loop_easy = 10;
+		loop_normal = 20;
+		loop_hard = 30;
+		for (int i = 0; i < 3; i++) {
+			hearts[i].heart = Object::create(
+				"images/heart.png", scene_game, 930 + (i * 100), 620);
+		}
+		sound_bgm->play(true);
+		sound_fail->stop();
+
+		scene_main->enter();
+
+
+		return true;
+		});
+
 	easy_select->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		selected_num = 0;
 		scene_game->enter();
+
+		showTimer(timer);
+		timer->set(40.f);
+		timer->start();
+		sound_game_bgm->play(true);
+		sound_bgm->stop();
 
 		/*client*/
 		pick_client(ano_guest);
@@ -208,6 +290,12 @@ int main() {
 		selected_num = 1;
 		scene_game->enter();
 
+		showTimer(timer);
+		timer->set(140.f);
+		timer->start();
+		sound_game_bgm->play(true);
+		sound_bgm->stop();
+
 		/*client*/
 		pick_client(ano_guest);
 
@@ -239,6 +327,13 @@ int main() {
 
 		selected_num = 2;
 		scene_game->enter();
+
+		showTimer(timer);
+		timer->set(150.f);
+		timer->start();
+		sound_game_bgm->play(true);
+		sound_bgm->stop();
+
 		/*client*/
 		pick_client(ano_guest);
 
@@ -277,13 +372,7 @@ int main() {
 		}
 		return true;
 		});
-	
-	auto reset_button = Object::create("images/reset.png", scene_game, 100, 100);
-	reset_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
-		change = 0;
-		cout << "change: " << change << endl;
-		return true;
-		});
+
 
 	auto up_for_5000 = Object::create("images/up_button.png", scene_game, 932, 273);
 	auto down_for_5000 = Object::create("images/down_button.png", scene_game, 932, 238);
@@ -296,6 +385,13 @@ int main() {
 	auto done = Object::create("images/done.png", scene_game, 1040, 210);
 	auto reset = Object::create("images/reset.png", scene_game, 930, 210);
 
+	reset->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		change = 0;
+		cout << "change: " << change << endl;
+		return true;
+		});
+
+
 
 	done->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		if (loop_easy > 0 || loop_normal > 0 || loop_hard > 0) {
@@ -303,19 +399,34 @@ int main() {
 				cout << "selected_num: " << selected_num << endl;
 				if (selected_num == 0) {
 					loop_easy -= 1;
+					win_count++;
 				}
 				if (selected_num == 1) {
 					loop_normal -= 1;
+					win_count++;
 				}
 				if (selected_num == 2) {
 					loop_hard -= 1;
+					win_count++;
 				}
+				cout << "win:" << win_count << endl;
+				sound_done_succ->play();
 				showMessage("계산 성공!");
 			}
 			else {
 				loop_easy--;
+				lose_count++;
 				cout << loop_easy << endl;
+				sound_done_fail->play();
 				showMessage("계산 실패!");
+				hearts[life].heart->hide();
+				life++;
+				if (life == 3) {
+					scene_over->enter();
+					sound_game_bgm->stop();
+					sound_fail->play();
+					timer->stop();
+				}
 
 			}
 
@@ -358,9 +469,35 @@ int main() {
 			/*cash*/
 			cash = pick_cash(cash_image, total);
 		}
-		if (loop_easy < 0 || loop_normal < 0|| loop_hard <0) {
-			endGame();
+
+		/* win_count*/
+
+		if (selected_num == 0) {
+			if (win_count > 2 && win_count < 5) { progress_point->locate(scene_game, 120, 50); }
+			else if (win_count >= 5 && win_count < 8) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+			else if (win_count >= 8) { medal->setImage("images/베테랑.png"); }
 		}
+
+		else if (selected_num == 1) {
+			if (win_count > 4 && win_count < 8) { progress_point->locate(scene_game, 120, 50); }
+			else if (win_count >= 8 && win_count < 15) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+			else if (win_count >= 15) { medal->setImage("images/베테랑.png"); }
+		}
+
+		else if (selected_num == 2) {
+			if (win_count > 6 && win_count < 12) { progress_point->locate(scene_game, 120, 50); }
+			else if (win_count >= 12 && win_count > 21) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+			else if (win_count >= 22) { medal->setImage("images/베테랑.png"); }
+		}
+
+
+		if (loop_easy < 0 || loop_normal < 0 || loop_hard < 0) {
+
+			scene_final->enter();
+			sound_game_bgm->stop();
+			sound_succ->play();
+		}
+
 		return true;
 		});
 
@@ -404,6 +541,34 @@ int main() {
 		showingStatus(change);
 		return true;
 		});
+
+
+	/*scene_over*/
+	auto click = Object::create("images/click.png", scene_over, 90, 60);
+	click->setScale(0.8f);
+
+	click->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		scene_main->enter();
+		sound_bgm->play(true);
+		sound_fail->stop();
+
+		win_count = 0;
+		lose_count = 0;
+		cash = 0;
+		change = 0;
+		total = 0;
+		loop_easy = 10;
+		loop_normal = 20;
+		loop_hard = 30;
+		life = 0;
+		for (int i = 0; i < 3; i++) {
+			hearts[i].heart = Object::create(
+				"images/heart.png", scene_game, 930 + (i * 100), 620);
+		}
+		return true;
+		});
+
+
 
 	startGame(scene_main);
 	return 0;
