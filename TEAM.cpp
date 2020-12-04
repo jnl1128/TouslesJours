@@ -167,7 +167,6 @@ int main() {
 
 	int win_count = 0;
 	int lose_count = 0;
-	int grade = 0;
 
 
 
@@ -396,34 +395,25 @@ int main() {
 		/* win_count*/
 		
 		if (selected_num == 0) {
-			if (win_count < 5) grade = 1;
-			else if (win_count >= 5 && win_count > 8) grade = 2;
-			else if (win_count >= 8) grade = 3;
+			if (win_count > 2 && win_count < 5) { progress_point->locate(scene_game, 120, 50);}
+			else if (win_count >= 5 && win_count < 8) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+			else if (win_count >= 8) {medal->setImage("images/베테랑.png"); }
 		}
 
 		else if (selected_num == 1) {
-			if (win_count < 8) grade = 1;
-			else if (win_count >= 8 && win_count < 15) grade = 2;
-			else if (win_count >= 15) grade = 3;
+			if (win_count > 4 && win_count < 8) { progress_point->locate(scene_game, 120, 50); }
+			else if (win_count >= 8 && win_count < 15){ progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+			else if (win_count >= 15) { medal->setImage("images/베테랑.png"); }
 		}
 
-		else if (selected_num == 2){
-			if (win_count < 12) grade = 1;
-			else if (win_count >= 12 && win_count > 21) grade = 2;
-			else if (win_count >= 22) grade = 3;
+		else if (selected_num == 2) {
+			if (win_count > 6 && win_count < 12) { progress_point->locate(scene_game, 120, 50); }
+			else if (win_count >= 12 && win_count > 21) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+			else if (win_count >= 22) { medal->setImage("images/베테랑.png"); }
 		}
-
+	
 
 		if (loop_easy < 0 || loop_normal < 0 || loop_hard < 0) {
-
-
-			switch (grade) {
-			
-			case 1: {medal->setImage("images/알린이.png"); break; }
-			case 2: {medal->setImage("images/프로.png"); break; }
-			case 3: {medal->setImage("images/베테랑.png"); break; }
-
-			}
 
 			scene_final->enter();
 		}
