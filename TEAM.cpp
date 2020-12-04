@@ -1,4 +1,4 @@
-﻿#include <bangtal>
+#include <bangtal>
 #include <iostream>
 #include <vector>
 using namespace bangtal;
@@ -18,7 +18,11 @@ void pick_client(ObjectPtr object) {
 
 int pick_cash(ObjectPtr object, int num) {
 	int return_value = 0;
+<<<<<<< HEAD
 	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000, 23000, 25000, 30000 };
+=======
+	vector <int> Vector_cash{ 2000, 3000, 5000, 10000, 15000, 20000, 23000, 25000, 30000};
+>>>>>>> a5eedeaea686fb4968b7a4b03528f427134a6f4c
 	for (int v_num = 0; v_num < 6; v_num++) {
 		if (num > Vector_cash[v_num]) {
 			continue;
@@ -149,10 +153,17 @@ int main() {
 	auto end_button = Object::create("images/endgame.png", scene_final, 700, 30);
 
 	auto medal = Object::create("images/알린이.png", scene_final, 948, 450);
+<<<<<<< HEAD
 
 	end_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
 		endGame();
 		return true;
+=======
+	
+	end_button->setOnMouseCallback([&](ObjectPtr object, int x, int y, MouseAction action)->bool {
+		endGame();
+		return true; 
+>>>>>>> a5eedeaea686fb4968b7a4b03528f427134a6f4c
 
 		});
 
@@ -341,7 +352,11 @@ int main() {
 					loop_hard -= 1;
 					win_count++;
 				}
+<<<<<<< HEAD
 				cout << "win:" << win_count << endl;
+=======
+				cout << "win:"<< win_count << endl;
+>>>>>>> a5eedeaea686fb4968b7a4b03528f427134a6f4c
 				showMessage("계산 성공!");
 			}
 			else {
@@ -393,16 +408,28 @@ int main() {
 		}
 
 		/* win_count*/
+<<<<<<< HEAD
 
 		if (selected_num == 0) {
 			if (win_count > 2 && win_count < 5) { progress_point->locate(scene_game, 120, 50); }
 			else if (win_count >= 5 && win_count < 8) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
 			else if (win_count >= 8) { medal->setImage("images/베테랑.png"); }
+=======
+		
+		if (selected_num == 0) {
+			if (win_count > 2 && win_count < 5) { progress_point->locate(scene_game, 120, 50);}
+			else if (win_count >= 5 && win_count < 8) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+			else if (win_count >= 8) {medal->setImage("images/베테랑.png"); }
+>>>>>>> a5eedeaea686fb4968b7a4b03528f427134a6f4c
 		}
 
 		else if (selected_num == 1) {
 			if (win_count > 4 && win_count < 8) { progress_point->locate(scene_game, 120, 50); }
+<<<<<<< HEAD
 			else if (win_count >= 8 && win_count < 15) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+=======
+			else if (win_count >= 8 && win_count < 15){ progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
+>>>>>>> a5eedeaea686fb4968b7a4b03528f427134a6f4c
 			else if (win_count >= 15) { medal->setImage("images/베테랑.png"); }
 		}
 
@@ -411,7 +438,11 @@ int main() {
 			else if (win_count >= 12 && win_count > 21) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
 			else if (win_count >= 22) { medal->setImage("images/베테랑.png"); }
 		}
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> a5eedeaea686fb4968b7a4b03528f427134a6f4c
 
 		if (loop_easy < 0 || loop_normal < 0 || loop_hard < 0) {
 
