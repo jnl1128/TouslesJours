@@ -43,7 +43,7 @@ void showingStatus(int num) {
 }
 
 
-int main() {
+int main(){
 
 	struct Product product[25]{
 
@@ -186,7 +186,7 @@ int main() {
 	int loop_easy = 10;
 	int loop_normal = 20;
 	int loop_hard = 30;
-
+	int iter;
 
 	/*price computation value*/
 	int cash = 0; //손님이 내는 돈
@@ -206,7 +206,7 @@ int main() {
 		pick_client(ano_guest);
 
 		/*빵개수 랜덤*/
-		const int iter = rand() % 3 + 1;
+		iter = rand() % 3 + 1;
 
 		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
 		for (int i = 0; i < iter; i++) {
@@ -239,7 +239,7 @@ int main() {
 		pick_client(ano_guest);
 
 		/*빵개수 랜덤*/
-		const int iter = rand() % 3 + 2;
+		iter = rand() % 3 + 2;
 
 		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
 		for (int i = 0; i < iter; i++) {
@@ -270,7 +270,7 @@ int main() {
 		pick_client(ano_guest);
 
 		/*빵개수 랜덤*/
-		const int iter = rand() % 3 + 3;
+		iter = rand() % 3 + 3;
 
 		/*빵 15개 종류 중 랜덤하게 받은 개수만큼 vector에 넣어줌*/
 		for (int i = 0; i < iter; i++) {
@@ -342,7 +342,7 @@ int main() {
 					win_count++;
 				}
 
-				cout << "win:"<< win_count << endl;
+				cout << "win:" << win_count << endl;
 				showMessage("계산 성공!");
 			}
 			else {
@@ -369,8 +369,6 @@ int main() {
 			pick_client(ano_guest);//손님 이미지 랜덤으로 보이게
 
 			/*빵 오브젝트, 가격 저장*/
-			const int iter = rand() % 3 + 1;
-			std::cout << "iter: " << iter << endl;
 			for (int i = 0; i < iter; i++) {
 				int type = 0;
 				if (selected_num == 0) type = rand() % 11;
@@ -394,11 +392,11 @@ int main() {
 		}
 
 		/* win_count*/
-		
+
 		if (selected_num == 0) {
-			if (win_count > 2 && win_count < 5) { progress_point->locate(scene_game, 120, 50);}
+			if (win_count > 2 && win_count < 5) { progress_point->locate(scene_game, 120, 50); }
 			else if (win_count >= 5 && win_count < 8) { progress_point->locate(scene_game, 230, 50);  medal->setImage("images/프로.png"); }
-			else if (win_count >= 8) {medal->setImage("images/베테랑.png"); }
+			else if (win_count >= 8) { medal->setImage("images/베테랑.png"); }
 
 		}
 
@@ -463,11 +461,7 @@ int main() {
 		return true;
 		});
 
-
-
-
-
-
 	startGame(scene_main);
 	return 0;
 }
+
